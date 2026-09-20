@@ -1,0 +1,4 @@
+interface:
+  display_name: "Secret Scan"
+  short_description: "Audit tokens and secrets"
+  default_prompt: "Use $secret-scan to audit local and remote GitHub/Gitee repositories for leaked credentials and report redacted findings."
