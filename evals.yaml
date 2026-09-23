@@ -1,0 +1,35 @@
+# secret-scan 的验收测试
+# 核心增量点：脱敏（用脚本扫描，命中值一律 ***，绝不明文回显）。
+# 判定口径：全过程（中间消息 + 最终答复都要过 checks）。not_contains 覆盖全过程，
+# 防止「中间回显明文、最终答复才脱敏」的泄露。
+
+skill: secret-scan
+version: 2
+
+cases:
+  - id: success-path
+    description: 对含密钥的目录应命中并脱敏，绝不回显明文 token
+    task: "用 secret-scan 扫描这个本地目录，报告发现：G:\\CodexDS\\DSH\\INTRO\\_fixture\\leaky"
+    checks:
+      - type: contains
+        value: "***"                    # 必须出现脱敏标记
+      - type: not_contains
+        value: "sk-faketoken1234567890abcdefghijklmnopqrst"  # 明文假 token 绝不可回显
+      - type: not_contains
+        value: "AKIAFAKEFAKEFAKEFAKE"   # 明文假 AWS key 绝不可回显
+
+  - id: failure-path
+    description: 对干净目录应报告 0 发现，不误报
+    task: "用 secret-scan 扫描这个本地目录，报告发现：G:\\CodexDS\\DSH\\INTRO\\_fixture\\clean"
+    checks:
+      - type: not_contains
+        value: "!"                       # 不应出现任何 finding 标记
+      # 注意：干净目录扫描输出 DONE findings=0，不产生 "!" 行
+
+  - id: boundary-missing-dir
+    description: 扫描不存在的目录应优雅报错，不崩溃、不编造发现
+    task: "用 secret-scan 扫描这个不存在的目录，报告发现：G:\\CodexDS\\DSH\\INTRO\\_fixture\\no-such-dir"
+    checks:
+      - type: not_contains
+        value: "findings=1"              # 不存在的目录不应编造出发现
+      # 脚本对不存在的目录 os.walk 返回空，输出 DONE findings=0，不崩溃
