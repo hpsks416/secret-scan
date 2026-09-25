@@ -1,36 +1,29 @@
 # secret-scan
 
-Audit local and remote GitHub/Gitee repositories for leaked credentials, .env files, private keys, and other risky filenames, reporting redacted findings only. Use when the user asks to check, audit, or review token/secret security in their projects.
+只读安全审计：扫描本地工作区与 GitHub/Gitee 仓库里的泄露凭据、.env、私钥和敏感文件名，以 *** 脱敏报告，绝不回显真实密钥。
 
-## 这是什么
+## 适用对象
 
-DSH（DeepSeek Harness）skill —— 一个可由 AI agent 按需自动加载的能力单元。克隆到 skill 目录后，DSH 会依据上方描述自动发现并触发它，无需构建。
-
-## 安装
-
-最简单：用 [dsh-config](https://github.com/hpsks416/dsh-config) 的一键脚本 `install.ps1` 批量安装全部 skill。单个安装：
-
-    # GitHub
-    git clone https://github.com/hpsks416/secret-scan.git "$env:USERPROFILE\.dsh\skills\secret-scan"
-    # 或 Gitee（国内直连更快）
-    git clone https://gitee.com/hpsks416/secret-scan.git "$env:USERPROFILE\.dsh\skills\secret-scan"
-
-克隆后 DSH 会自动重新发现，无需重启。更新用：
-
-    git -C "$env:USERPROFILE\.dsh\skills\secret-scan" pull
+- DeepSeek Harness（DSH）用户：一个可由 AI agent 按需自动加载的 skill，克隆即用、无需构建。
+- 需要审计本地/远程仓库密钥泄露的开发者
 
 ## 目录结构
 
     secret-scan/
     ├── SKILL.md    技能入口与工作流
-    ├── agents\openai.yaml
     ├── evals.yaml
+    ├── agents\openai.yaml
     ├── references\scan-guide.md
     ├── scripts\scan_secrets.py
 
-## 依赖
+## 安装
 
-脚本以 Python 3 标准库为主，无第三方依赖（个别脚本如需额外依赖，见文件头注释）。
+    # GitHub
+    git clone https://github.com/hpsks416/secret-scan.git "$env:USERPROFILE\.dsh\skills\secret-scan"
+    # 或 Gitee（国内直连）
+    git clone https://gitee.com/hpsks416/secret-scan.git "$env:USERPROFILE\.dsh\skills\secret-scan"
+
+克隆后 DSH 自动重新发现，无需构建。
 
 ## License
 
