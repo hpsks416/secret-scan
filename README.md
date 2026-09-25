@@ -1,3 +1,5 @@
+> ⚠️ **本仓库已废弃**：内容已并入 [agent-deploy](https://github.com/hpsks416/agent-deploy) 的 skills/secret-scan/ 子目录，请以 agent-deploy 为准。本仓库保留仅供历史归档。
+
 # secret-scan
 
 只读安全审计：扫描本地工作区与 GitHub/Gitee 仓库里的泄露凭据、.env、私钥和敏感文件名，以 *** 脱敏报告，绝不回显真实密钥。
@@ -29,3 +31,4 @@
 ## License
 
 MIT License. See [LICENSE](LICENSE).
+
