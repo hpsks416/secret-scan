@@ -1,55 +1,37 @@
 # secret-scan
 
-Codex 专用安全审计 SKILL：只读扫描本地工作区与 GitHub/Gitee 云端仓库，发现泄露的 token、`.env`、私钥及敏感文件名，并以 `***` 脱敏后报告。绝不回显真实凭据，绝不修改任何文件或仓库。
+Audit local and remote GitHub/Gitee repositories for leaked credentials, .env files, private keys, and other risky filenames, reporting redacted findings only. Use when the user asks to check, audit, or review token/secret security in their projects.
+
+## 这是什么
+
+DSH（DeepSeek Harness）skill —— 一个可由 AI agent 按需自动加载的能力单元。克隆到 skill 目录后，DSH 会依据上方描述自动发现并触发它，无需构建。
 
 ## 安装
 
-已安装到本机技能目录：
+最简单：用 [dsh-config](https://github.com/hpsks416/dsh-config) 的一键脚本 `install.ps1` 批量安装全部 skill。单个安装：
 
-```text
-C:\Users\Razer\.codex\skills\secret-scan
-```
+    # GitHub
+    git clone https://github.com/hpsks416/secret-scan.git "$env:USERPROFILE\.dsh\skills\secret-scan"
+    # 或 Gitee（国内直连更快）
+    git clone https://gitee.com/hpsks416/secret-scan.git "$env:USERPROFILE\.dsh\skills\secret-scan"
 
-目录结构：
+克隆后 DSH 会自动重新发现，无需重启。更新用：
 
-```text
-secret-scan/
-|-- SKILL.md                 技能入口与工作流
-|-- agents/openai.yaml       UI 元数据
-|-- scripts/scan_secrets.py  本地 + GitHub + Gitee 扫描器
-`-- references/scan-guide.md 命中类型、误报与修复指南
-```
+    git -C "$env:USERPROFILE\.dsh\skills\secret-scan" pull
 
-## 使用
+## 目录结构
 
-```powershell
-$env:PYTHONUTF8='1'
+    secret-scan/
+    ├── SKILL.md    技能入口与工作流
+    ├── agents\openai.yaml
+    ├── evals.yaml
+    ├── references\scan-guide.md
+    ├── scripts\scan_secrets.py
 
-# 扫描 GitHub + Gitee 云端仓库（owner: hpsks416）
-python scripts/scan_secrets.py
+## 依赖
 
-# 扫描本地 Codex 工作区
-python scripts/scan_secrets.py --local "C:\Users\Razer\Documents\Codex"
-
-# 仅 GitHub / 仅 Gitee
-python scripts/scan_secrets.py --skip-gitee
-python scripts/scan_secrets.py --skip-github
-```
-
-凭据通过环境变量注入，不写入仓库：
-
-- `GITHUB_TOKEN`（缺省时回退到 `gh auth token`）
-- `GITEE_TOKEN`
-
-## 默认扫描对象
-
-- 远端：GitHub 与 Gitee 上 `hpsks416` 的全部仓库。
-- 本地：`C:\Users\Razer\Documents\Codex`（可用 `--local` 覆盖）。
-
-## 检测内容
-
-GitHub token（`ghp_`/`gho_`/`github_pat_`）、当前生效的 GitHub/Gitee token、OpenAI/Slack/Google/AWS 密钥特征、PEM 私钥、`access_token=...`、`Authorization: Basic ...`，以及 `.env`、`*.key`、`id_rsa`、`credentials.json`、`.netrc`、`.npmrc`、`.pypirc`、`*.p12`、`*.pfx` 等敏感文件名。
+脚本以 Python 3 标准库为主，无第三方依赖（个别脚本如需额外依赖，见文件头注释）。
 
 ## License
 
-MIT
+MIT License. See [LICENSE](LICENSE).
